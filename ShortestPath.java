@@ -106,7 +106,7 @@ public class ShortestPath
 
 		for(int i = 0;i<vertex.size();i++)
 		{
-			System.out.println("========"+i);
+			System.out.println("Please wait========"+i);
 
 			int v = least_cost_unknown_vertex();
 
@@ -195,7 +195,7 @@ public class ShortestPath
 		//Example Abilene - Chicago
 		//3 attractions
 		String sc = "Abilene TX";
-		String ec = "Chicago IL";
+		String ec = "San Francisco CA";
 		List<String> places = new ArrayList<String>();
 		places.add("Cloud Gate");
 		places.add("Musical Instrument Museum");
