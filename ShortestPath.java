@@ -158,7 +158,7 @@ public class ShortestPath
 	}
 	public Queue<String> route(String starting_city, String ending_city, List<String> attractions)
 	{
-		System.out.println("Starting: "+starting_city+" Ending: "+ending_city);
+		
 		List<Integer> list = new ArrayList<Integer>();
 		City c = new City();
 		Places p = new Places();
@@ -200,9 +200,12 @@ public class ShortestPath
 		places.add("Cloud Gate");
 		places.add("Musical Instrument Museum");
 		places.add("USS Midway Museum");
-		System.out.println(places);
+		
 		for(String city:sp.route(sc,ec,places))
 			System.out.println(city);
+		System.out.println("Starting: "+sc+" Ending: "+ec);
+		System.out.println("attractions: "+places);
+		
 		System.out.println("Total minute cost: "+sp.getCost());
 
 
