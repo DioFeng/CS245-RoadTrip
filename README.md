@@ -2,9 +2,9 @@
 # Author
   Dion Feng
 # Purpose
-  Using Dijkstras's algorithm
-  to determine the shortest path
-  of user's desire road trip cities
+ - Read data from multiple files and create classes to store the information
+ - Calculate the shortest distance or time between two cities along with/out the attractions on the road
+ - Implemented Dijkstra’s algorithm to return the shortest path
   - The User will provide a:
     -Starting city, ending city
     -List of attractions
