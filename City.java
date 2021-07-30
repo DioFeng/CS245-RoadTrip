@@ -5,8 +5,6 @@ public class City {
     ArrayList<String> combine; //<All cities no duplicate>
     ArrayList<ArrayList<Integer>> adj, adj_list;
 
-    private String location, attraction;
-
     public City() {
         generateAdjList();
     }
