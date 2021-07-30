@@ -133,8 +133,10 @@ public class ShortestPath
 
         int sc = c.getCities().indexOf(starting_city); // index of starting city
         // add attractions to list of integer(index)
-        for(String n:attractions) {
-            list.add(c.getCities().indexOf(p.getLocation(p.attractions().indexOf(n))));
+        if(!attractions.isEmpty()) {
+            for(String n:attractions) {
+                list.add(c.getCities().indexOf(p.getLocation(p.attractions().indexOf(n))));
+            }
         }
         list.add(c.getCities().indexOf(ending_city));
         //calculate the time cost from one city to its nearest attraction in the list
