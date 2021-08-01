@@ -13,7 +13,7 @@ public class Places {
     }
     private void getData() {
         try {
-            File file = new File("src/attractions.csv");
+            File file = new File("attractions.csv");
             Scanner sc = new Scanner(file);
             sc.nextLine();
             while(sc.hasNextLine()) {
