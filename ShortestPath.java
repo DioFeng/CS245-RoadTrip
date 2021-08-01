@@ -210,8 +210,8 @@ public class ShortestPath
                 }
             }
         }
-        System.out.println(places);
         sp.route(start_city, destination, places);//generate a route queue with minimal cost in miles
+        System.out.println("=====ROUTE=====");
         sp.printRoute(start_city); // print the route and cost
     }
 }
