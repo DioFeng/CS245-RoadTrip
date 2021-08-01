@@ -39,14 +39,16 @@ public class Roads {
             System.out.println("Not such file");
         }
     }
-    public String getEndCity(int i) { return endCity.get(i); }
+    //getters
 
+    public String getEndCity(int i) { return endCity.get(i); }
     public String getInitCity(int i) { return initCity.get(i); }
-    //cost
+    //cost in miles
     public int getDistance(int i) { return distance.get(i); }
-    //cost
+    //cost in minutes
     public int getMinute(int i) { return time.get(i); }
     public int getSize() { return endCity.size(); }
     public List<String> endCity() { return endCity; }
     public List<String> initCity() { return initCity; }
+
 }
