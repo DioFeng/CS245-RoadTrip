@@ -7,10 +7,13 @@
  - Calculate the shortest distance or time between two cities along with/out the attractions on the road
  - Implemented Dijkstra’s algorithm to return the shortest path
 # Notice
-  The compile/running time is going to take a while
-  because of the vertices(291)
-  Running time: O(VE)
   - User will provide: starting city, places to visit(optional), and destination.
+  - Change the file directory if using in your own system (Roads.java, Places.java)
+  ```
+  File file = new File(".../attractions.csv");
+  File file = new File(".../roads.csv");
+  ... -> replace it with your directory path where you put the src data files
+  ```
 # Demonstration
   ```
   Name of starting city (or EXIT to quit): San Francisco CA
