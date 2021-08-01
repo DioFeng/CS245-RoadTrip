@@ -18,7 +18,7 @@ public class Roads {
     // store data
     private void importData() {
         try {
-            File file = new File("src/roads.csv");
+            File file = new File("roads.csv");
             Scanner sc = new Scanner(file);
             //sc.nextLine();
             while(sc.hasNextLine())
