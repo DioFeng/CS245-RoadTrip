@@ -16,7 +16,7 @@
   Name of starting city (or EXIT to quit): San Francisco CA
   Name of ending city: Medford OR
   List an attraction along the way (or ENOUGH to stop listing): enough
-
+  =====ROUTE=====
   * San Francisco CA -> Sacramento CA
   * Sacramento CA -> Redding CA
   * Redding CA -> Medford OR
