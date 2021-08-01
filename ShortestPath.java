@@ -1,16 +1,17 @@
 import java.util.*;
 public class ShortestPath
 {
-    final static Places p = new Places();
-    final static Roads r = new Roads();
-    final static City c = new City();
+    final static Places p = new Places();//import attraction data from file (attraction=edge)
+    final static Roads r = new Roads(); //import city data from file (city=vertex)
+    final static City c = new City(); //setting up adjacency list for vertices
+
     public int SIZE;
     ArrayList<Integer> vertex,path,cost;
     ArrayList<Boolean> known;
     Stack<Integer> result;
     Queue<String> travelCities = new LinkedList<>();
-    private int time_cost;
-	
+    private int trip_cost;
+
     public ShortestPath()
     {
         // initiate data
@@ -19,7 +20,8 @@ public class ShortestPath
         path = new ArrayList<>(SIZE);
         cost = new ArrayList<>(SIZE);
         known = new ArrayList<>(SIZE);
-        for(int i = 0; i<SIZE;i++) {
+        //setting default values for the dijkstras algorithm's graph table
+        for(int i = 0; i<SIZE; i++) {
             vertex.add(i);
             path.add(-1);
             cost.add(Integer.MAX_VALUE);
@@ -31,8 +33,8 @@ public class ShortestPath
         int minCost = Integer.MAX_VALUE;
         int minDex = 0;
         // return the least cost city index
-        for(int i = 0; i<c.getSize();i++) {
-            if(!known.get(i) &&cost.get(i)<minCost) {
+        for(int i = 0; i<c.getSize(); i++) {
+            if(!known.get(i) && cost.get(i)<minCost) {
                 minCost = cost.get(i);
                 minDex = i;
             }
@@ -45,12 +47,12 @@ public class ShortestPath
         return list.get(vertex);
     }
 
-    //set vertex visited
+    //helper function -> set vertex as visited
     public void known(int vertex) {
         known.set(vertex,true);
     }
 
-    //return cost
+    //return the cost of the vertex
     public int cost(int vertex) {
         return cost.get(vertex);
     }
@@ -71,17 +73,18 @@ public class ShortestPath
 
         return dist;
     }
-    //update distance
+    //update distance on the graph table
     public void update_distance(int v,int n) {
         cost.set(n,edge_weight(v,n)+cost(v));
 
     }
-    // update the path
+    // update the path on the graph table
     public void update_path(int v,int n) {
         path.set(n,v);
     }
+    //Dijkstras' Algorithm
     public void doGraph(int sc, int visit) {
-        result = new Stack<Integer>();
+        result = new Stack<>();
         //initiate table
         for(int i = 0; i<SIZE;i++) {
             vertex.set(i, i);
@@ -107,7 +110,7 @@ public class ShortestPath
                 break;
             }
         }
-        time_cost+=cost.get(visit);
+        trip_cost+=cost.get(visit);
         int ve = visit;
         while(ve!=sc) {
             result.push(ve);
@@ -127,10 +130,9 @@ public class ShortestPath
                     cost.get(i));
         }
     }
-    public Queue<String> route(String starting_city, String ending_city, List<String> attractions) {
-        System.out.println("Starting: "+starting_city+" Ending: "+ending_city);
-        List<Integer> list = new ArrayList<Integer>();
 
+    public void route(String starting_city, String ending_city, List<String> attractions) {
+        List<Integer> list = new ArrayList<>();
         int sc = c.getCities().indexOf(starting_city); // index of starting city
         // add attractions to list of integer(index)
         if(!attractions.isEmpty()) {
@@ -144,27 +146,72 @@ public class ShortestPath
             doGraph(sc, visit);
             sc = visit;
         }
-        return travelCities;
     }
-    //return the total cost of the trip(in minute)
+    //return the total cost of the trip(in miles)
     public int getCost() {
-        return time_cost;
+        return trip_cost;
+    }
+    //helper function to print the shortest route and the cost
+    public void printRoute(String start_city) {
+        String next_city = start_city;
+        if(!travelCities.isEmpty()) {
+            for(String city:travelCities) {
+                System.out.println("* "+next_city+" -> "+city);
+                next_city = city;
+            }
+            System.out.println("Total cost: "+getCost()+" miles");
+        }
     }
 
     public static void main(String[] args) {
+
         ShortestPath sp = new ShortestPath();
-        //Example Abilene - Chicago
-        //3 attractions
-        String start_city = "Abilene TX";
-        String destination = "Chicago IL";
-        List<String> places = new ArrayList<String>();
-        places.add("Cloud Gate");
-        places.add("Musical Instrument Museum");
-        places.add("USS Midway Museum");
+        List<String> places = new ArrayList<>();//list to store user's attraction input
+        Scanner scan = new Scanner(System.in);
+        //user inputs
+        String start_city = "";
+        String destination = "";
+        String attractions_choice = "";
+
+        while(!start_city.equalsIgnoreCase("EXIT")&&
+                !attractions_choice.equalsIgnoreCase("ENOUGH")) {
+            //Get the initial city from user
+            System.out.print("Name of starting city (or EXIT to quit): ");
+            start_city = scan.nextLine();
+            //Input validation
+            while(!r.endCity().contains(start_city) && !r.initCity().contains(start_city)) {
+                System.out.println(start_city + " not found, try again");
+                System.out.print("Name of starting city (or EXIT to quit): ");
+                start_city = scan.nextLine();
+            }
+            if(start_city.equalsIgnoreCase("EXIT")) {
+                break;
+            }
+            //Get the destination city from user
+            System.out.print("Name of ending city: ");
+            destination = scan.nextLine();
+            //Input validation
+            while(!r.endCity().contains(destination) && !r.initCity().contains(destination)) {
+                System.out.println(destination + " not found, try again");
+                System.out.print("Name of ending city: ");
+                destination = scan.nextLine();
+            }
+            //Get attractions from user
+            while(!attractions_choice.equalsIgnoreCase("ENOUGH")) {
+                System.out.print("List an attraction along the way (or ENOUGH to stop listing): ");
+                attractions_choice = scan.nextLine();
+                if(attractions_choice.equalsIgnoreCase("ENOUGH")) break;
+                //Input validation
+                if(!p.attractions().contains(attractions_choice)) {
+                    System.out.println("Attraction \""+attractions_choice+"\" unknown");
+                }
+                else {
+                    places.add(attractions_choice);//add attractions to the list
+                }
+            }
+        }
         System.out.println(places);
-        System.out.println("Start from: "+start_city);
-        for(String city:sp.route(start_city, destination, places))
-            System.out.println(city);
-        System.out.println("Total minute cost: "+sp.getCost());
+        sp.route(start_city, destination, places);//generate a route queue with minimal cost in miles
+        sp.printRoute(start_city); // print the route and cost
     }
 }
