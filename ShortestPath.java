@@ -164,7 +164,6 @@ public class ShortestPath
     }
 
     public static void main(String[] args) {
-
         ShortestPath sp = new ShortestPath();
         List<String> places = new ArrayList<>();//list to store user's attraction input
         Scanner scan = new Scanner(System.in);
@@ -179,7 +178,8 @@ public class ShortestPath
             System.out.print("Name of starting city (or EXIT to quit): ");
             start_city = scan.nextLine();
             //Input validation
-            while(!r.endCity().contains(start_city) && !r.initCity().contains(start_city)) {
+            while(!r.endCity().contains(start_city) && !r.initCity().contains(start_city) &&
+            !start_city.equalsIgnoreCase("EXIT")) {
                 System.out.println(start_city + " not found, try again");
                 System.out.print("Name of starting city (or EXIT to quit): ");
                 start_city = scan.nextLine();
@@ -209,9 +209,9 @@ public class ShortestPath
                     places.add(attractions_choice);//add attractions to the list
                 }
             }
+            sp.route(start_city, destination, places);//generate a route queue with minimal cost in miles
+            System.out.println("=====ROUTE=====");
+            sp.printRoute(start_city); // print the route and cost
         }
-        sp.route(start_city, destination, places);//generate a route queue with minimal cost in miles
-        System.out.println("=====ROUTE=====");
-        sp.printRoute(start_city); // print the route and cost
     }
 }
