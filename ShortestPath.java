@@ -10,6 +10,7 @@ public class ShortestPath
     ArrayList<Boolean> known;
     Stack<Integer> result;
     Queue<String> travelCities = new LinkedList<>();
+    ArrayList<Integer> most_near_city_cost;
     private int trip_cost;
 
     public ShortestPath()
@@ -28,7 +29,11 @@ public class ShortestPath
             known.add(false);
         }
     }
-    // return the index of the vertex that has the least cost and unvisited
+
+    /**
+     * find index of the unvisited vertex that has the least cost
+     * @return index of the found vertex
+     */
     public int least_cost_unknown_vertex() {
         int minCost = Integer.MAX_VALUE;
         int minDex = 0;
@@ -42,6 +47,11 @@ public class ShortestPath
         return minDex;
     }
 
+    /**
+     * function that generate list of adjacent cities
+     * @param vertex index of the city
+     * @return list of all neighbor cities
+     */
     public ArrayList<Integer> adjacent(int vertex) {
         ArrayList<ArrayList<Integer>> list = c.getAdjList();
         return list.get(vertex);
@@ -51,12 +61,12 @@ public class ShortestPath
     public void known(int vertex) {
         known.set(vertex,true);
     }
-
+    
     //return the cost of the vertex
     public int cost(int vertex) {
         return cost.get(vertex);
     }
-
+    
     //return the distance between two nearby cities
     public int edge_weight(int v,int n) {
 
@@ -73,16 +83,19 @@ public class ShortestPath
 
         return dist;
     }
+    
     //update distance on the graph table
     public void update_distance(int v,int n) {
         cost.set(n,edge_weight(v,n)+cost(v));
 
     }
+    
     // update the path on the graph table
     public void update_path(int v,int n) {
         path.set(n,v);
     }
-    //Dijkstras' Algorithm
+    
+    //Modified Dijkstras' Algorithm
     public void doGraph(int sc, int visit) {
         result = new Stack<>();
         //initiate table
@@ -94,36 +107,26 @@ public class ShortestPath
         }
         cost.set(sc,0);
 
-        for(int i = 0;i<vertex.size();i++) {
+        for(int i = 0;i < vertex.size();i++) {
             int v = least_cost_unknown_vertex();
             known(v); //mark visited
-            for(int n:adjacent(v)) {
-                if(cost(n) > cost(v)+edge_weight(v,n))//greedy algorithm, check if least cost
+            for (int n : adjacent(v)) {
+                if (cost(n) > cost(v) + edge_weight(v, n))//greedy algorithm, check if least cost
                 {
-                    update_distance(v,n);//O(1)
-                    update_path(v,n);//O(1)
+                    update_distance(v, n);//O(1)
+                    update_path(v, n);//O(1)
                 }
             }
-            if(known.get(visit))
-            {
+            if (known.get(visit)) {
                 //printGraph();
                 break;
             }
-        }
-        trip_cost+=cost.get(visit);
-        int ve = visit;
-        while(ve!=sc) {
-            result.push(ve);
-            ve = path.get(ve);
-        }
-        while(!result.isEmpty()) {
-            travelCities.add(c.getCities().get(result.pop()));
         }
     }
     // print the table
     public void printGraph() {
         System.out.println("Vertex      Known      Path      Cost");
-        for(int i = 0; i<vertex.size();i++) {
+        for(int i = 0; i<vertex.size(); i++) {
             System.out.println(vertex.get(i)+"           "+
                     known.get(i)+"      "+
                     path.get(i)+"       "+
@@ -134,20 +137,67 @@ public class ShortestPath
     public void route(String starting_city, String ending_city, List<String> attractions) {
         List<Integer> list = new ArrayList<>();
         int sc = c.getCities().indexOf(starting_city); // index of starting city
-        // add attractions to list of integer(index)
+        list.add(sc); // add source city in the list(starting city)
         if(!attractions.isEmpty()) {
-            for(String n:attractions) {
-                list.add(c.getCities().indexOf(p.getLocation(p.attractions().indexOf(n))));
+            //add attractions to list of integer(index)
+            for(String attraction : attractions) {
+                list.add(c.getCities().indexOf(p.getLocation(p.attractions().indexOf(attraction))));
+            }
+            List<Integer> temp = new ArrayList<>(list);//list used to keep track if visited city(remove it)
+            //calculate the time cost from one city to its nearest attraction in the list
+            for (int i = 0; i < list.size()-1; i++) {
+                ArrayList<Integer> near = find_Nearest_attraction(sc, temp);
+                int visit = temp.get(near.indexOf(Collections.min(near)));
+                doGraph(sc, visit);
+                calculate_cost(visit,sc);
+                sc = visit;
             }
         }
-        list.add(c.getCities().indexOf(ending_city));
-        //calculate the time cost from one city to its nearest attraction in the list
-        for(int visit : list) {
-            doGraph(sc, visit);
-            sc = visit;
+        doGraph(sc, c.getCities().indexOf(ending_city));
+        calculate_cost(c.getCities().indexOf(ending_city),sc);
+    }
+
+    /**
+     * function that add the cost between two cities
+     * add the cities to the stack for the route printing
+     * @param visit_city visiting city
+     * @param source_city starting city
+     */
+    private void calculate_cost(int visit_city, int source_city) {
+        trip_cost+=cost.get(visit_city);
+        //add cities to the stack
+        int ve = visit_city;
+        while(ve!=source_city) {
+            result.push(ve);
+            ve = path.get(ve);
+        }
+        while(!result.isEmpty()) {
+            travelCities.add(c.getCities().get(result.pop()));
         }
     }
-    //return the total cost of the trip(in miles)
+
+    /**
+     * 
+     * @param start_city city to compare to other cities
+     * @param list list of cities
+     * @return list of costs from fixate starting city to other cities
+     */
+    private ArrayList<Integer> find_Nearest_attraction(int start_city, List<Integer> list) {
+        most_near_city_cost = new ArrayList<>();
+        list.remove(list.indexOf(start_city));
+        //System.out.println("Removed==="+list);
+        for(int visit : list)
+        {
+            doGraph(start_city, visit);
+            most_near_city_cost.add(cost.get(visit));
+        }
+        return most_near_city_cost;
+    }
+
+    /**
+     * getter function
+     * @return total cost of the road trip
+     */
     public int getCost() {
         return trip_cost;
     }
