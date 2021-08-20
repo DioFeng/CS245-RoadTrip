@@ -1,5 +1,5 @@
 # RoadTrip 
-  - *CS245 Data Structure & Algorithms* - final project
+  - *CS245 Data Structure & Algorithms* - final project(2020 fall)
 # Author
   Dion Feng
 # Purpose 
